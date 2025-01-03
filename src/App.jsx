@@ -6,6 +6,7 @@ import Welcome from './pages/Welcome';
 import Login from './pages/Login';
 import TotalBoard from './pages/TotalBoard';
 import PersonalBoard from './pages/PersonalBoard';
+import Exeption from './pages/Exeption';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -18,6 +19,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/totalboard" element={<TotalBoard />} />
           <Route path="/personalboard" element={<PersonalBoard />} />
+          <Route path="/exeption" element={<Exeption />} />
         </Routes>
       </Router>
     </>

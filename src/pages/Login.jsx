@@ -1,14 +1,29 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function LoginPage() {
-  // 각 입력 필드를 참조하는 useRef
-  const classRef = useRef(null);
-  const idRef = useRef(null);
-  const passwordRef = useRef(null);
+  const [cls, setCls] = useState(''); // 아이디 상태
+  const [group, setGroup] = useState('');
+  const [password, setPassword] = useState(''); // 비밀번호 상태
+  const [submittedId, setSubmittedId] = useState(
+    localStorage.getItem('id') || ''
+  );
+  const [submittedPassword, setSubmittedPassword] = useState(
+    localStorage.getItem('password') || ''
+  );
+  // const [message, setMessage] = useState('');
 
-  // 특정 입력 필드로 스크롤하는 함수
-  const scrollToNext = (ref) => {
-    ref.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  useEffect(() => {
+    // 로컬 스토리지에 상태 값 저장
+    if (submittedId && submittedPassword) {
+      localStorage.setItem('id', submittedId);
+      localStorage.setItem('password', submittedPassword);
+    }
+  }, [submittedId, submittedPassword]);
+
+  const handleLogin = (e) => {
+    e.preventDefault(); // 폼 제출 시 새로고침 방지
+    setSubmittedId(cls.padStart(2, '0') + '_' + group); // 아이디 상태를 제출된 아이디로 저장
+    setSubmittedPassword(password); // 비밀번호 상태를 제출된 비밀번호로 저장
   };
 
   return (
@@ -19,40 +34,44 @@ function LoginPage() {
       </div>
 
       {/* 입력 폼 */}
-      <form>
+      <form onSubmit={handleLogin}>
         {/* 반 번호 */}
-        <div ref={classRef} style={{ marginBottom: '35px' }}>
+        <div style={{ marginBottom: '35px' }}>
           <label>
             <p style={{ margin: '5px' }}>반</p>
             <input
               type="text"
               placeholder="반 번호를 입력하세요"
-              onBlur={() => scrollToNext(idRef)} // 입력 후 다음 필드로 스크롤
+              value={cls}
+              onChange={(e) => setCls(e.target.value)}
               style={{ width: '100%', padding: '10px', fontSize: '16px' }}
             />
           </label>
         </div>
 
         {/* 학번 */}
-        <div ref={idRef} style={{ marginBottom: '35px' }}>
+        <div style={{ marginBottom: '35px' }}>
           <label>
             <p style={{ margin: '5px' }}>조 번호</p>
             <input
               type="text"
               placeholder="조 번호를 입력하세요"
-              onBlur={() => scrollToNext(passwordRef)} // 입력 후 다음 필드로 스크롤
+              value={group}
+              onChange={(e) => setGroup(e.target.value)}
               style={{ width: '100%', padding: '10px', fontSize: '16px' }}
             />
           </label>
         </div>
 
         {/* 비밀번호 */}
-        <div ref={passwordRef} style={{ marginBottom: '35px' }}>
+        <div style={{ marginBottom: '35px' }}>
           <label>
             <p style={{ margin: '5px' }}>비밀번호</p>
             <input
               type="text"
               placeholder="비밀번호를 입력하세요"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               style={{ width: '100%', padding: '10px', fontSize: '16px' }}
             />
           </label>
@@ -65,7 +84,10 @@ function LoginPage() {
         >
           시작하기
         </button>
+        {/* <p style="color: red">{message}</p> */}
       </form>
+      <p>{submittedId}</p>
+      <p>{submittedPassword}</p>
     </div>
   );
 }
