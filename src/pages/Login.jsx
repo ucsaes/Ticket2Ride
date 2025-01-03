@@ -115,8 +115,6 @@ function LoginPage() {
         </button>
         <p style={{ color: 'red' }}>{message}</p>
       </form>
-      <p>{submittedId}</p>
-      <p>{submittedPassword}</p>
     </div>
   );
 }

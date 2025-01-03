@@ -1,9 +1,12 @@
 import React from 'react';
+import Header from '../componets/header';
 
 function TotalBoard() {
   return (
     <>
-      <h1>Login Page</h1>
+      <header>
+        <Header />
+      </header>
     </>
   );
 }
