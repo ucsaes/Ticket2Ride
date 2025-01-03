@@ -1,4 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useNavigate,
+} from 'react-router-dom';
+
+import { checkUserCredentials } from '../firebase/firebaseUtils';
 
 function LoginPage() {
   const [cls, setCls] = useState(''); // 아이디 상태
@@ -10,13 +18,34 @@ function LoginPage() {
   const [submittedPassword, setSubmittedPassword] = useState(
     localStorage.getItem('password') || ''
   );
-  // const [message, setMessage] = useState('');
+  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 로컬 스토리지에 상태 값 저장
     if (submittedId && submittedPassword) {
       localStorage.setItem('id', submittedId);
       localStorage.setItem('password', submittedPassword);
+
+      checkUserCredentials(submittedId, submittedPassword)
+        .then((result) => {
+          if (result.isValid) {
+            // 로그인 성공
+            setMessage('');
+            console.log('success');
+            if (group == '0') {
+              navigate('/TotalBoard');
+            } else {
+              navigate('/PersonalBoard');
+            }
+          } else {
+            // 로그인 실패
+            setMessage(result.error);
+          }
+        })
+        .catch((error) => {
+          setMessage(error);
+        });
     }
   }, [submittedId, submittedPassword]);
 
@@ -84,7 +113,7 @@ function LoginPage() {
         >
           시작하기
         </button>
-        {/* <p style="color: red">{message}</p> */}
+        <p style={{ color: 'red' }}>{message}</p>
       </form>
       <p>{submittedId}</p>
       <p>{submittedPassword}</p>
