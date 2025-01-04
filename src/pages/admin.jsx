@@ -8,7 +8,8 @@ import {
 import { db, doc, getDoc, setDoc, updateDoc } from '../firebase/firebase';
 
 import { checkUserCredentials } from '../firebase/firebaseUtils';
-import drawCards from './admin_util';
+import { drawCards, drawOne } from './cards_util';
+import Header from '../componets/header';
 
 function Admin() {
   const [submittedId, setSubmittedId] = useState(
@@ -90,11 +91,10 @@ function Admin() {
       if (false) {
         for (let cls = 1; cls <= 27; cls++) {
           await setDoc(doc(db, 'destcards', cls.toString().padStart(2, '0')), {
-            visible: [
+            remain: [
               0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
               19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
             ],
-            remain: 30,
           });
         }
       }
@@ -126,106 +126,87 @@ function Admin() {
       return;
     }
 
-    try {
-      //기차카드 설정
-      if (true) {
-        for (let cls = 1; cls <= 27; cls++) {
-          let cards = [12, 12, 12, 12, 12, 12, 12, 12, 14];
-          console.log('Initial cards:', cards);
-          let totalCards = cards.reduce((sum, count) => sum + count, 0);
+    //기차카드 설정
+    if (false) {
+      for (let cls = 1; cls <= 27; cls++) {
+        let deck = [12, 12, 12, 12, 12, 12, 12, 12, 14];
 
-          for (let group = 1; group <= 5; group++) {
-            let groupCards = [];
-
-            for (let i = 0; i < 4; i++) {
-              let randomIndex = Math.floor(Math.random() * totalCards);
-              let chosenCardIndex = -1;
-              let cumulativeSum = 0;
-
-              // 선택된 카드 타입 결정
-              for (let j = 0; j < cards.length; j++) {
-                cumulativeSum += cards[j];
-                if (randomIndex < cumulativeSum) {
-                  chosenCardIndex = j;
-                  break;
-                }
-              }
-
-              // 카드 수 감소 및 결과에 추가
-              if (chosenCardIndex !== -1 && cards[chosenCardIndex] > 0) {
-                groupCards.push(chosenCardIndex);
-                cards[chosenCardIndex]--;
-                totalCards--;
-              } else {
-                i--; // 카드 선택 실패 시 다시 시도
-              }
-            }
-
-            // 학생 카드 저장
-            let groupCards_formatted = new Array(9).fill(0);
-            for (let i of groupCards) {
-              groupCards_formatted[i] += 1;
-            }
-            const curUser = doc(
+        for (let group = 1; group <= 5; group++) {
+          let result = drawCards(deck, 4);
+          deck = result.deck;
+          // 학생 카드 저장
+          let groupCards = new Array(9).fill(0);
+          for (let i of result.drawnCards) {
+            groupCards[i] += 1;
+          }
+          await updateDoc(
+            doc(
               db,
               'users',
               cls.toString().padStart(2, '0') + '_' + group.toString()
-            );
-            await updateDoc(curUser, {
+            ),
+            {
               cardnum: 4,
-              cards: groupCards_formatted,
-            }).catch((err) => {
-              console.error('Error 1');
-            });
-          }
-
-          let extraCards = [];
-
-          for (let i = 0; i < 5; i++) {
-            let randomIndex = Math.floor(Math.random() * totalCards);
-            let chosenCardIndex = -1;
-            let cumulativeSum = 0;
-
-            // 선택된 카드 타입 결정
-            for (let j = 0; j < cards.length; j++) {
-              cumulativeSum += cards[j];
-              if (randomIndex < cumulativeSum) {
-                chosenCardIndex = j;
-                break;
-              }
+              cards: groupCards,
             }
-
-            // 카드 수 감소 및 결과에 추가
-            if (chosenCardIndex !== -1 && cards[chosenCardIndex] > 0) {
-              extraCards.push(chosenCardIndex);
-              cards[chosenCardIndex]--;
-              totalCards--;
-            } else {
-              i--; // 카드 선택 실패 시 다시 시도
-            }
-          }
-
-          await setDoc(doc(db, 'traincards', cls.toString().padStart(2, '0')), {
-            deck: cards,
-            visible: extraCards,
+          ).catch((err) => {
+            console.error('Error 1');
           });
         }
-      }
 
-      // 목적지 카드 설정
-      if (true) {
-        let visible = Array.from({ length: 30 }, (_, i) => i);
-      }
+        let result = drawCards(deck, 5);
+        deck = result.deck;
+        let extraCards = result.drawnCards;
 
-      console.log('successfully done');
-    } catch (error) {
-      console.error('Error 2');
-      return;
+        await setDoc(doc(db, 'traincards', cls.toString().padStart(2, '0')), {
+          deck: deck,
+          visible: extraCards,
+        });
+      }
     }
+
+    // 목적지 카드 설정
+    if (true) {
+      for (let cls = 1; cls <= 27; cls++) {
+        let remain = Array.from({ length: 30 }, (_, i) => i);
+
+        for (let group = 1; group <= 5; group++) {
+          let groupCards = new Array(4).fill(-1);
+          let result = drawOne(remain);
+          remain = result.updatedList;
+          groupCards[0] = result.drawnNumber;
+          result = drawOne(remain);
+          remain = result.updatedList;
+          groupCards[1] = result.drawnNumber;
+
+          await updateDoc(
+            doc(
+              db,
+              'users',
+              cls.toString().padStart(2, '0') + '_' + group.toString()
+            ),
+            {
+              destcards: groupCards,
+            }
+          ).catch((err) => {
+            console.error('Error 1');
+          });
+        }
+
+        await setDoc(doc(db, 'destcards', cls.toString().padStart(2, '0')), {
+          remain: remain,
+        });
+      }
+    }
+
+    console.log('successfully done');
   };
 
   return (
     <>
+      <header>
+        <Header />
+      </header>
       <button
         onClick={() => {
           initialSetting();

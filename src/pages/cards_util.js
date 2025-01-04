@@ -34,4 +34,19 @@ function drawCards(deck, n) {
   return { deck, drawnCards };
 }
 
-export default drawCards;
+function drawOne(visible) {
+  if (visible.length === 0) {
+    console.log('No numbers left to draw!');
+    return { drawnNumber: null, updatedList: visible };
+  }
+
+  const randomIndex = Math.floor(Math.random() * visible.length);
+  const drawnNumber = visible[randomIndex];
+
+  // 숫자 제거
+  visible.splice(randomIndex, 1);
+
+  return { drawnNumber, updatedList: visible };
+}
+
+export { drawCards, drawOne };
