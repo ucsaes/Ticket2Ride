@@ -5,9 +5,10 @@ import {
   Route,
   useNavigate,
 } from 'react-router-dom';
-import { db, doc, getDoc, setDoc } from '../firebase/firebase';
+import { db, doc, getDoc, setDoc, updateDoc } from '../firebase/firebase';
 
 import { checkUserCredentials } from '../firebase/firebaseUtils';
+import drawCards from './admin_util';
 
 function Admin() {
   const [submittedId, setSubmittedId] = useState(
@@ -47,7 +48,7 @@ function Admin() {
               password: '1234', //학생들 비밀번호
               cardnum: 0,
               cards: [0, 0, 0, 0, 0, 0, 0, 0],
-              destcards: [0, 0, 0, 0],
+              destcards: [-1, -1, -1, -1],
               number: group.toString(),
               score: 0,
               train: 45,
@@ -113,7 +114,115 @@ function Admin() {
     }
   };
 
-  const gameSetting = () => {};
+  const gameSetting = async () => {
+    const isValidUser = await checkUserCredentials(
+      submittedId,
+      submittedPassword
+    );
+
+    if (!isValidUser) {
+      console.error('Invalid password');
+      navigate('/exception');
+      return;
+    }
+
+    try {
+      //기차카드 설정
+      if (true) {
+        for (let cls = 1; cls <= 27; cls++) {
+          let cards = [12, 12, 12, 12, 12, 12, 12, 12, 14];
+          console.log('Initial cards:', cards);
+          let totalCards = cards.reduce((sum, count) => sum + count, 0);
+
+          for (let group = 1; group <= 5; group++) {
+            let groupCards = [];
+
+            for (let i = 0; i < 4; i++) {
+              let randomIndex = Math.floor(Math.random() * totalCards);
+              let chosenCardIndex = -1;
+              let cumulativeSum = 0;
+
+              // 선택된 카드 타입 결정
+              for (let j = 0; j < cards.length; j++) {
+                cumulativeSum += cards[j];
+                if (randomIndex < cumulativeSum) {
+                  chosenCardIndex = j;
+                  break;
+                }
+              }
+
+              // 카드 수 감소 및 결과에 추가
+              if (chosenCardIndex !== -1 && cards[chosenCardIndex] > 0) {
+                groupCards.push(chosenCardIndex);
+                cards[chosenCardIndex]--;
+                totalCards--;
+              } else {
+                i--; // 카드 선택 실패 시 다시 시도
+              }
+            }
+
+            // 학생 카드 저장
+            let groupCards_formatted = new Array(9).fill(0);
+            for (let i of groupCards) {
+              groupCards_formatted[i] += 1;
+            }
+            const curUser = doc(
+              db,
+              'users',
+              cls.toString().padStart(2, '0') + '_' + group.toString()
+            );
+            await updateDoc(curUser, {
+              cardnum: 4,
+              cards: groupCards_formatted,
+            }).catch((err) => {
+              console.error('Error 1');
+            });
+          }
+
+          let extraCards = [];
+
+          for (let i = 0; i < 5; i++) {
+            let randomIndex = Math.floor(Math.random() * totalCards);
+            let chosenCardIndex = -1;
+            let cumulativeSum = 0;
+
+            // 선택된 카드 타입 결정
+            for (let j = 0; j < cards.length; j++) {
+              cumulativeSum += cards[j];
+              if (randomIndex < cumulativeSum) {
+                chosenCardIndex = j;
+                break;
+              }
+            }
+
+            // 카드 수 감소 및 결과에 추가
+            if (chosenCardIndex !== -1 && cards[chosenCardIndex] > 0) {
+              extraCards.push(chosenCardIndex);
+              cards[chosenCardIndex]--;
+              totalCards--;
+            } else {
+              i--; // 카드 선택 실패 시 다시 시도
+            }
+          }
+
+          await setDoc(doc(db, 'traincards', cls.toString().padStart(2, '0')), {
+            deck: cards,
+            visible: extraCards,
+          });
+        }
+      }
+
+      // 목적지 카드 설정
+      if (true) {
+        let visible = Array.from({ length: 30 }, (_, i) => i);
+      }
+
+      console.log('successfully done');
+    } catch (error) {
+      console.error('Error 2');
+      return;
+    }
+  };
 
   return (
     <>
@@ -126,7 +235,13 @@ function Admin() {
       </button>
       <br />
       <br />
-      <button onClick={gameSetting()}>game setting</button>
+      <button
+        onClick={() => {
+          gameSetting();
+        }}
+      >
+        game setting
+      </button>
     </>
   );
 }
