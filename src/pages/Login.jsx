@@ -33,10 +33,15 @@ function LoginPage() {
             // 로그인 성공
             setMessage('');
             console.log('success');
-            if (group == '0') {
+            if (submittedId == '00_0') {
+              navigate('/admin');
+              return;
+            } else if (group == '0') {
               navigate('/TotalBoard');
+              return;
             } else {
               navigate('/PersonalBoard');
+              return;
             }
           } else {
             // 로그인 실패
