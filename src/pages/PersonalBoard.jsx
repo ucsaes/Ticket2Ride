@@ -13,14 +13,6 @@ import TrainNumBox from '../componets/TrainNumBox';
 import DestCardBox from '../componets/DestCardBox';
 import './PersonalBoard.css';
 
-function Hey() {
-  return (
-    <>
-      <h1>hey</h1>
-    </>
-  );
-}
-
 function PersonalBoard() {
   const [submittedId, setSubmittedId] = useState(
     localStorage.getItem('id') || ''

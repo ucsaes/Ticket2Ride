@@ -1,0 +1,77 @@
+.square {
+  position: relative;
+  width: 90%; /* 정사각형이 열 크기에 맞게 */
+  aspect-ratio: 1; /* 정사각형 유지 */
+  background-color: #4caf50;
+  border-radius: 15px; /* 모서리 둥글게 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 25px;
+  font-weight: bold;
+  border: 2px solid rgb(255, 255, 255);
+}
+
+.square.color0 {
+  background-color: rgb(197, 45, 45);
+}
+
+.square.color1 {
+  background-color: rgb(197, 106, 45);
+}
+
+.square.color2 {
+  background-color: rgb(155, 153, 53);
+}
+
+.square.color3 {
+  background-color: rgb(34, 149, 42);
+}
+
+.square.color4 {
+  background-color: rgb(45, 65, 197);
+}
+
+.square.color5 {
+  background-color: rgb(184, 45, 197);
+}
+
+.square.color6 {
+  background-color: rgb(32, 32, 32);
+}
+
+.square.color7 {
+  background-color: rgb(255, 255, 255);
+  color: black;
+}
+
+.square.color8 {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(197, 45, 45),
+    rgb(45, 65, 197)
+  );
+}
+
+.square.color9 {
+  background-color: rgba(255, 255, 255, 0);
+  border: 5px solid rgb(255, 255, 255);
+  width: 80%;
+  border-radius: 50px;
+}
+
+.rect {
+  position: relative;
+  aspect-ratio: 3/4;
+  width: 100%;
+  background-color: #f0f0f0; /* 기본 배경 색 */
+  border-radius: 30px; /* 모서리 둥글게 */
+  overflow: hidden;
+  color: black;
+  overflow: hidden;
+  color: black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
