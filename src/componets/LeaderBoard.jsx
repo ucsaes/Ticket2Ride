@@ -5,7 +5,10 @@ import './totalcomps.css';
 
 function ScoreBox({ team, score }) {
   return (
-    <div></div>
+    <div className="TeamInfoBox">
+      <div>{team}조</div>
+      <div>{score}점</div>
+    </div>
     // <div className={`square color${color}`}>
     //   <div className="team">{team}</div>
     //   <div className="score">{score}</div>
@@ -14,12 +17,13 @@ function ScoreBox({ team, score }) {
 }
 
 function LeaderBoard({ scores }) {
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([0, 1, 2, 3, 4]);
+  scores = [100, 90, 80, 70, 60];
   return (
     <div className="leaderboard_container">
       <div className="title">점수판</div>
       {teams.map((t, index) => (
-        <ScoreBox key={index} teams={t} score={scores[index]} />
+        <ScoreBox key={index} team={t + 1} score={scores[index]} />
       ))}
     </div>
   );
