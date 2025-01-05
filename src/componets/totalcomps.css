@@ -1,0 +1,51 @@
+.entire_container {
+  margin-top: 60px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  background-color: red;
+}
+
+.left_container .right_container .map_container {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.left_container {
+  background-color: green;
+  width: 10%;
+}
+
+.right_container {
+  background-color: yellow;
+  width: 20%;
+}
+
+.map_container {
+  background-color: blue;
+  width: 70%;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(17, 17, 17); /* 반투명 검은 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 최상위에 위치 */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
