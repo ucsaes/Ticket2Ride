@@ -1,0 +1,51 @@
+.container {
+  max-width: 500px;
+  display: flex;
+  flex-direction: column; /* 상하로 배치 */
+  width: 100%; /* 화면 전체를 차지 */
+  margin-top: 50px;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.train_container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 5열 */
+  grid-template-rows: repeat(2, 1fr); /* 2행 */
+  gap: 10px; /* 정사각형 사이 간격 */
+  width: 100%;
+  padding: 10px; /* 양쪽 끝 여백 */
+  box-sizing: border-box;
+}
+
+.dest_container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2개의 열로 나눈다 */
+  grid-template-rows: repeat(2, 1fr); /* 2개의 행으로 나눈다 */
+  gap: 20px; /* 요소들 간의 간격 설정 */
+  width: 100%;
+  padding: 20px; /* 가장자리 여백 */
+  box-sizing: border-box;
+}
+
+.train_container,
+.dest_container {
+  width: 100%; /* 부모 컨테이너와 같은 폭 */
+  max-width: none; /* 자식 요소의 max-width 제한 해제 */
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgb(17, 17, 17); /* 반투명 검은 배경 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* 최상위에 위치 */
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+}
